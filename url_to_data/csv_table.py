@@ -2,15 +2,12 @@ import os
 from pathlib import Path
 from bs4 import BeautifulSoup
 import urllib.request
-from datetime import datetime
 from urllib.parse import urlsplit
 import requests
 import pandas as pd
 import io
 from pandas import errors as pandas_errors
 import logging
-
-#logging.basicConfig(level=logging.DEBUG)
 
 
 class Website:
@@ -69,7 +66,7 @@ class csvTable:
         if not os.path.exists(self.folder_path):
             os.makedirs(self.folder_path)
 
-        self.table_full_file_path = f"{self.folder_path}\{self.table_file_name}"
+        self.table_full_file_path = f"{self.folder_path}/{self.table_file_name}"
 
         if os.path.exists(self.table_full_file_path):
             os.remove(self.table_full_file_path)
@@ -109,9 +106,12 @@ class csvTable:
     def save_clean_csv(self):
 
         try:
-            self.table.to_csv(self.table_full_file_path)
+            self.table.to_csv(self.table_full_file_path.strip)
         except ValueError:
-            self.table_full_file_path = f"{self.folder_path}\{Path(self.table_url).stem}.csv"
+            self.table_full_file_path = f"{self.folder_path}/{Path(self.table_url).stem}.csv"
+            self.table.to_csv(self.table_full_file_path)
+        except OSError:
+            self.table_full_file_path = f"{self.folder_path}/{Path(self.table_url).stem}.csv"
             self.table.to_csv(self.table_full_file_path)
 
     def __update_header_with_first_row(self):

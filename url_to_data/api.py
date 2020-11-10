@@ -1,7 +1,7 @@
 from .csv_table import csvTable, Website
 
 
-def all_csvs_to_file(url, folder_path, force_latin1=True, encoding="", force_sep="", second_row_headers=False):
+def all_csvs_to_file(url, folder_path):
 
     website = Website()
     website.find_csvs(url)
