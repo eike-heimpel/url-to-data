@@ -31,13 +31,15 @@ class Website:
 
                     try:
                         file_name = Path(a["href"].stem)
+                        file_name = str(file_name).split(".csv", 1)[0]
                     except AttributeError:
                         file_name = a["href"].split("/")[-1]
-                        file_name = file_name.strip(".csv")
+                        file_name = file_name.split(".csv", 1)[0]
+                        #file_name = file_name.strip(".csv")
                     if "http://" in a['href'] or "https://" in a['href']:
-                        self.links_to_csvs[f'{file_name}.csv'] = a['href']
+                        self.links_to_csvs[f'{file_name}'] = a['href']
                     else:
-                        self.links_to_csvs[f'{file_name}.csv'] = f"{base_url}/{a['href']}"
+                        self.links_to_csvs[f'{file_name}'] = f"{base_url}/{a['href']}"
 
 
     def __find_base_url(self, full_url):
@@ -59,6 +61,7 @@ class csvTable:
         self.table = None
         self.table_name = "wrong table name"
         self.second_row_headers = second_row_headers
+        #self.session = requests.session()
 
 
     def table_from_csv_url(self):
@@ -108,10 +111,10 @@ class csvTable:
         try:
             self.table.to_csv(self.table_full_file_path.strip)
         except ValueError:
-            self.table_full_file_path = f"{self.folder_path}/{Path(self.table_url).stem}.csv"
+            self.table_full_file_path = f"{self.folder_path}/{self.table_file_name}.csv"
             self.table.to_csv(self.table_full_file_path)
         except OSError:
-            self.table_full_file_path = f"{self.folder_path}/{Path(self.table_url).stem}.csv"
+            self.table_full_file_path = f"{self.folder_path}/{self.table_file_name}.csv"
             self.table.to_csv(self.table_full_file_path)
 
     def __update_header_with_first_row(self):
